@@ -1,6 +1,6 @@
 # jump
 
-Tap the screen to make the pink blob jump and avoid the obstacles.  Similar to Chrome 404 dinosaur game, or Flappy Bird. The jump 'physics' seems produce the same flapping effect as Flappy Bird.
+Tap the screen to make the pink blob jump and avoid the obstacles.  Similar to Chrome no internet dinosaur game, or Flappy Bird. The jump 'physics' seems produce the same flapping effect as Flappy Bird.
 
 Many features could be added, for example:
 
