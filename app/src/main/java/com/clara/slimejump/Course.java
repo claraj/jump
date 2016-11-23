@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 
@@ -37,6 +38,8 @@ public class Course extends View {
 
     float obstacleSpeed = 30;
 
+    float lineWidth = 10;
+
     public Course(Context context, float screenmax, float screenheight) {
         super(context);
         this.context = context;
@@ -46,8 +49,8 @@ public class Course extends View {
         timeUntilNewObstacle = rnd.nextInt(maxTimeUntilNewObstacle);
         obstacles = new ArrayList<>();
         paint = new Paint();
-        paint.setColor(Color.MAGENTA);
-        paint.setStrokeWidth(10);
+        paint.setColor(ContextCompat.getColor(context, R.color.foreground));
+        paint.setStrokeWidth(lineWidth);
 
         slideLeftMatrix = new Matrix();
         slideLeftMatrix.setTranslate(-obstacleSpeed, 0);
@@ -74,7 +77,7 @@ public class Course extends View {
     private void addRandomObstacle() {
 
         Obstacle obstacle = null;
-        int random = rnd.nextInt(2);
+        int random = rnd.nextInt(3);
         switch (random) {
             case 0 : {
                 obstacle = new Stalagmite(context, SCREEN_MAX_X, 50 + rnd.nextInt(40));
@@ -84,6 +87,11 @@ public class Course extends View {
                 obstacle = new Box(context, SCREEN_MAX_X, 30 + rnd.nextInt(70));
                 break;
             }
+            case 2 : {
+                obstacle = new Stalactite(context, SCREEN_MAX_X, 100 + rnd.nextInt(40));
+                break;
+            }
+
 
             default: {
                 Log.e(TAG, "error, don't know what type of obstacle to add.");
@@ -107,7 +115,6 @@ public class Course extends View {
                 obstacle = null;
             }
 
-            Log.d(TAG, "drawing " + obstacle + " " + obstacle.path);
             canvas.drawPath(obstacle.path, paint);
         }
 

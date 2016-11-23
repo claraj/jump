@@ -1,23 +1,27 @@
 package com.clara.slimejump;
 
+import android.graphics.Color;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Blob blob;
-    Course course;
-
-    long period = 100;
-
     TextView gameOverTv;
+    FrameLayout contentView;
 
-    boolean gameOver = false;
+    int background, actors;   //Colors, not currently used
+
+    ArrayList<View> gameComponents;
+
+    Game game;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,84 +29,63 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         setContentView(R.layout.activity_game);
 
-        FrameLayout contentView = (FrameLayout) findViewById(android.R.id.content);
+        contentView = (FrameLayout) findViewById(android.R.id.content);
         contentView.setOnClickListener(this);
 
+        background = ContextCompat.getColor(this, R.color.background);
+        actors = ContextCompat.getColor(this, R.color.foreground);
+
         gameOverTv = (TextView) findViewById(R.id.game_over_message);
+
+        gameComponents = new ArrayList<>();
+
+        gameComponents.add(gameOverTv);
+
+    }
+
+
+    void gameStart() {
         gameOverTv.setVisibility(View.INVISIBLE);
     }
 
-    float screenWidth;
-    float screenHeight;
+    void gameOver() {
+        gameOverTv.setVisibility(View.VISIBLE);
+
+    }
+
+
+    void addGameComponent(View view) {
+        gameComponents.add(view);
+        contentView.addView(view);
+    }
+
+    void removeGameComponents() {
+        for (View view : gameComponents) {
+            contentView.removeView(view);
+        }
+    }
+
+    void updateGameUI() {
+        for (View view : gameComponents) {
+            view.invalidate();
+        }
+    }
 
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         if (hasFocus) {
 
-            start();
+            game = new Game(this, contentView.getWidth(), contentView.getHeight());
         }
     }
 
-    private void start() {
-
-        FrameLayout mainView =  (FrameLayout) findViewById(android.R.id.content);
-        screenWidth = mainView.getWidth();
-        screenHeight = mainView.getHeight();
-
-        mainView.removeView(course);
-        mainView.removeView(blob);
-        course = new Course(this, screenWidth, screenHeight);
-        blob = new Blob(this);
-
-
-        mainView.addView(blob);
-        mainView.addView(course);
-
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                update();
-
-                if (!collision()) {
-                    handler.postDelayed(this, period);
-                } else {
-                    gameOver = true;
-                    gameOverTv.setVisibility(View.VISIBLE);
-                }
-            }
-        }, period);
-
-    }
-
-    private boolean collision() {
-        return course.didCollideWithObstacle(blob);
-    }
-
-    private void update() {
-        blob.update();
-        course.update();
-        blob.invalidate();
-        course.invalidate();
-    }
 
     @Override
     public void onClick(View view) {
 
         // if game over, restart.
-
-        if (gameOver) {
-            gameOver = false;
-            gameOverTv.setVisibility(View.INVISIBLE);
-            start();
-        }
-
-        //otherwise, jump!
-
-        else {
-            blob.jump();
-        }
+        game.click();
 
     }
 }
