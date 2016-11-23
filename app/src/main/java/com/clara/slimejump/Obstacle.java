@@ -164,5 +164,3 @@ class Box extends Obstacle {
     }
 }
 
-}
-
