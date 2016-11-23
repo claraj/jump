@@ -1,0 +1,19 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0099cc"
+    tools:context="com.clara.slimejump.GameActivity"
+    android:backgroundTint="#000000">
+
+    <TextView
+        android:id="@+id/game_over_message"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="game over, tap to restart"
+        android:visibility="visible"
+        android:gravity="center"
+        android:textColor="#FF00FF"
+        />
+
+</FrameLayout>
