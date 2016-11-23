@@ -3,14 +3,16 @@ package com.clara.slimejump;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.util.Log;
 import android.view.View;
 
+
 /**
- * Created by we4954cp on 11/22/2016.
+ * Created by clara on 11/22/2016.
+ * Obstacles that the Blob must jump over.
  */
 
 abstract public class Obstacle extends View {
@@ -33,6 +35,7 @@ abstract public class Obstacle extends View {
 
 class Stalagmite extends Obstacle {
 
+    String TAG = "STALAGMITE";
     float height;
 
     float width = 50;
@@ -57,9 +60,24 @@ class Stalagmite extends Obstacle {
     @Override
     public boolean intersects(Blob blob) {
 
+        //todo this doesn't work correctly, it just draws a box around the Triangle and tests to see if the blob intersects with it.
+        //todo how to do the correct math?
+
         //Know blob's center x and y
         //and this triangle's path
-        return false;   //todo
+
+        RectF bounds = new RectF();
+        path.computeBounds(bounds, true);
+
+        //is inside bound box?
+
+        if ( blob.x + (blob.size/2) > bounds.left && blob.x - (blob.size/2) < bounds.right
+                &&  blob.y + (blob.size/2) > bounds.top && blob.y - (blob.size/2) < bounds.bottom )
+        {
+            return true;
+        }
+
+        return false;
 
     }
 
@@ -71,14 +89,12 @@ class Box extends Obstacle {
     float height;
     float width = 30;
 
-//    RectF rect;
 
     public Box(Context context, float screenMax, float height) {
         super(context, screenMax);
         this.height = height;
         this.paint = new Paint();
         paint.setColor(Color.MAGENTA);
-        //RectF rect = new RectF();
         path = new Path();
         path.addRect(screenMaxX, groundLevelY - height, screenMaxX + width, groundLevelY, Path.Direction.CCW);
 
@@ -93,7 +109,19 @@ class Box extends Obstacle {
     @Override
     public boolean intersects(Blob blob) {
 
+        RectF bounds = new RectF();
+        path.computeBounds(bounds, true);
+
+        //is inside rectangle  bound box?
+
+        if ( blob.x + (blob.size/2) > bounds.left && blob.x - (blob.size/2) < bounds.right
+                &&  blob.y + (blob.size/2) > bounds.top && blob.y - (blob.size/2) < bounds.bottom )
+        {
+            return true;
+        }
+
         return false;
+
     }
 }
 

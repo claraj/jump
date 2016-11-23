@@ -8,7 +8,7 @@ import android.view.View;
 
 
 /**
- * Created by we4954cp on 11/22/2016.
+ * Created by clara on 11/22/2016. You control the Blob. jump over the obstacles!
  */
 
 public class Blob extends View {

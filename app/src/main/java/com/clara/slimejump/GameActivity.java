@@ -32,23 +32,32 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         gameOverTv.setVisibility(View.INVISIBLE);
     }
 
+    float screenWidth;
+    float screenHeight;
+
+
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         if (hasFocus) {
-
-            FrameLayout mainView =  (FrameLayout) findViewById(android.R.id.content);
-            float screenWidth = mainView.getWidth();
-            blob = new Blob(this);
-            course = new Course(this, screenWidth);
-
-            mainView.addView(blob);
-            mainView.addView(course);
 
             start();
         }
     }
 
     private void start() {
+
+        FrameLayout mainView =  (FrameLayout) findViewById(android.R.id.content);
+        screenWidth = mainView.getWidth();
+        screenHeight = mainView.getHeight();
+
+        mainView.removeView(course);
+        mainView.removeView(blob);
+        course = new Course(this, screenWidth, screenHeight);
+        blob = new Blob(this);
+
+
+        mainView.addView(blob);
+        mainView.addView(course);
 
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -68,7 +77,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private boolean collision() {
-        return course.collideWithObstacle(blob);
+        return course.didCollideWithObstacle(blob);
     }
 
     private void update() {
@@ -80,12 +89,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        //jump!
+
+        // if game over, restart.
 
         if (gameOver) {
             gameOver = false;
             gameOverTv.setVisibility(View.INVISIBLE);
+            start();
         }
+
+        //otherwise, jump!
 
         else {
             blob.jump();

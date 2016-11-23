@@ -12,13 +12,13 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * Created by we4954cp on 11/22/2016.
+ * Created by clara on 11/22/2016. The scenery and obstacles.
  */
 
 public class Course extends View {
 
-    public static final float GROUND_LEVEL_Y = 300;
-    private static final String TAG = "COURSEVIEW";
+    public static float GROUND_LEVEL_Y = 300;
+    private static final String TAG = "COURSE VIEW";
     public final float SCREEN_MAX_X;
 
     int clockTicksSinceLastObstacle = 0;
@@ -37,10 +37,12 @@ public class Course extends View {
 
     float obstacleSpeed = 30;
 
-    public Course(Context context, float screenmax) {
+    public Course(Context context, float screenmax, float screenheight) {
         super(context);
         this.context = context;
         SCREEN_MAX_X = screenmax;
+        GROUND_LEVEL_Y = screenheight / 3 * 2;   // two thirds down screen
+
         timeUntilNewObstacle = rnd.nextInt(maxTimeUntilNewObstacle);
         obstacles = new ArrayList<>();
         paint = new Paint();
@@ -53,15 +55,12 @@ public class Course extends View {
     }
 
     void update() {
-        
-        //Log.d(TAG, "update" + clockTicksSinceLastObstacle);
-        
+
         clockTicksSinceLastObstacle++;
 
         if (timeUntilNewObstacle < clockTicksSinceLastObstacle) {
             clockTicksSinceLastObstacle = 0;
             timeUntilNewObstacle = rnd.nextInt(maxTimeUntilNewObstacle);
-            //addObstacle(new Stalagmite(context, SCREEN_MAX_X, 50));
             addRandomObstacle();
         }
 
@@ -96,13 +95,9 @@ public class Course extends View {
         }
     }
 
-    //The ground, and obstacles that the slime must jump over
-
 
     @Override
     public void onDraw(Canvas canvas) {
-
-        Log.d(TAG, "obstacle count= " + obstacles.size());
 
         canvas.drawLine(0, GROUND_LEVEL_Y, SCREEN_MAX_X, GROUND_LEVEL_Y, paint);
 
@@ -114,11 +109,9 @@ public class Course extends View {
 
             Log.d(TAG, "drawing " + obstacle + " " + obstacle.path);
             canvas.drawPath(obstacle.path, paint);
-
-
         }
 
-        //remove null obstacles
+        //remove null obstacles, start at end of list and work through to front
         for (int x = obstacles.size()-1; x >= 0 ; x--) {
             if (obstacles.get(x) == null) {
                 obstacles.remove(x);
@@ -127,7 +120,7 @@ public class Course extends View {
     }
 
 
-    public boolean collideWithObstacle(Blob blob) {
+    public boolean didCollideWithObstacle(Blob blob) {
 
         //has blob hit obstacle?
 
