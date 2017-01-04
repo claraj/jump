@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 /**
- * Created by we4954cp on 11/23/2016.
+ * Created by clara on 11/23/2016.  This handles the state of the game. 
  */
 
 public class Game {
